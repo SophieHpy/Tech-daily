@@ -1,0 +1,370 @@
+# ═══════════════════════════════════════════════════════════════
+#                    Tech Daily 配置文件
+#              （基于 TrendRadar v6.10 改造 · 科技版）
+# ═══════════════════════════════════════════════════════════════
+#
+# 每天定时推送科技热点到你手机：
+#   热榜平台 + RSS 订阅 → 关键词分组 → （可选）AI 总结「值得关注的方向」→ 推送
+#
+# 只需动这几个地方：
+#   1. platforms.sources      —— 想加/删哪个热榜平台
+#   2. rss.feeds              —— 想加/删哪个 RSS 源
+#   3. frequency_words.txt    —— 想看什么关键词（分组配置，最重要）
+#   4. 推送渠道在 GitHub Secrets 里配，不写在这里（见 README）
+#
+# ===============================================================
+# 1. 基础设置
+# ===============================================================
+app:
+  timezone: "Asia/Shanghai"           # 所有时间显示和判断用这个时区
+  show_version_update: true
+
+
+# ===============================================================
+# 1.5 调度系统
+# ===============================================================
+schedule:
+  enabled: false                      # 本项目为「每天推一次」模式，不需要时段调度
+  preset: "morning_evening"           # （未启用，忽略）
+
+
+# ===============================================================
+# 2. 数据源 - 热榜平台（科技向）
+#
+# 数据来源于 newsnow 开源项目: https://github.com/ourongxing/newsnow
+# expected_domain: 安全校验，防止链接劫持/数据篡改，勿删
+# ===============================================================
+platforms:
+  enabled: true
+  api_url: ""
+  sources:
+    # ── 国际科技 ──
+    - id: "hackernews"
+      name: "Hacker News"
+      expected_domain: "ycombinator.com"
+    - id: "producthunt"
+      name: "Product Hunt"
+      expected_domain: "producthunt.com"
+    - id: "github-trending-today"
+      name: "GitHub 今日热榜"
+      expected_domain: "github.com"
+    - id: "solidot"
+      name: "Solidot"
+      expected_domain: "solidot.org"
+    - id: "freebuf"
+      name: "FreeBuf 安全"
+      expected_domain: "freebuf.com"
+    # ── 国内科技 ──
+    - id: "ithome"
+      name: "IT之家"
+      expected_domain: "ithome.com"
+    - id: "sspai"
+      name: "少数派"
+      expected_domain: "sspai.com"
+    - id: "juejin"
+      name: "掘金"
+      expected_domain: "juejin.cn"
+    - id: "v2ex"
+      name: "V2EX"
+      expected_domain: "v2ex.com"
+    - id: "zhihu"
+      name: "知乎"
+      expected_domain: "zhihu.com"
+    # ── 科技商业/产业 ──
+    - id: "wallstreetcn-hot"
+      name: "华尔街见闻"
+      expected_domain: "wallstreetcn.com"
+    - id: "cls-hot"
+      name: "财联社热门"
+      expected_domain: "cls.cn"
+
+
+# ===============================================================
+# 3. 数据源 - RSS 订阅（科技向）
+#
+# RSS 不受关键词过滤约束时会太多 —— RSS 区的标题也会按关键词分组匹配
+# （见 report.display_mode）。小众优质源建议放进 standalone 区完整展示。
+# ===============================================================
+rss:
+  enabled: true
+
+  freshness_filter:
+    enabled: true
+    max_age_days: 1                   # 只推送 1 天内的文章（每日早报场景）
+
+  feeds:
+    - id: "hackernews-front"
+      name: "Hacker News 首页"
+      url: "https://hnrss.org/frontpage"
+
+    - id: "hackernews-show"
+      name: "Show HN（新产品/独立开发）"
+      url: "https://hnrss.org/show"
+
+    - id: "ifanr"
+      name: "爱范儿"
+      url: "https://www.ifanr.com/feed"
+
+    - id: "infoq-cn"
+      name: "InfoQ 中文"
+      url: "https://www.infoq.cn/feed"
+
+    - id: "geekpark"
+      name: "极客公园"
+      url: "http://www.geekpark.net/rss"
+
+    - id: "arstechnica"
+      name: "Ars Technica"
+      url: "https://feeds.arstechnica.com/arstechnica/index"
+
+    - id: "github-trending-rss"
+      name: "GitHub Trending（含项目简介）"
+      url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml"
+
+    - id: "ruanyifeng"
+      name: "阮一峰的网络日志"
+      url: "https://www.ruanyifeng.com/blog/atom.xml"
+      max_age_days: 7                 # 周刊类源，放宽新鲜度
+
+    - id: "theverge"
+      name: "The Verge"
+      url: "https://www.theverge.com/rss/index.xml"
+
+    - id: "lobsters"
+      name: "Lobsters"
+      url: "https://lobste.rs/rss"
+
+    - id: "oschina"
+      name: "开源中国"
+      url: "https://www.oschina.net/news/rss"
+      enabled: false                 # 可选备选源，需要时打开
+
+
+# ===============================================================
+# 4. 报告模式
+# ===============================================================
+report:
+  mode: "daily"                       # 当日汇总：汇总当天所有匹配新闻（每日早报最合适）
+                                      # daily / current / incremental
+
+  display_mode: "keyword"             # keyword = 按关键词分组（推荐）
+                                      # platform = 按来源分组
+
+  sort_by_position_first: true        # 按 frequency_words.txt 里词组的定义顺序展示
+                                      # （把最关心的方向写在最前面）
+
+  rank_threshold: 5                   # 排名高亮阈值
+
+  max_news_per_keyword: 8             # 每个关键词组最多显示 8 条（控制推送长度）
+
+
+# ===============================================================
+# 4.5 筛选策略
+# ===============================================================
+filter:
+  method: "keyword"                   # keyword = 关键词匹配（零成本，默认）
+                                      # ai = AI 智能筛选（需配 AI_API_KEY，见 README 进阶）
+
+  priority_sort_enabled: true         # （仅 method=ai 时生效）按 ai_interests.txt 顺序排序
+
+
+# ===============================================================
+# 4.6 AI 智能筛选配置（仅 filter.method=ai 时生效）
+# ===============================================================
+ai_filter:
+  batch_size: 200
+  batch_interval: 2
+  min_score: 0.7
+
+
+# ===============================================================
+# 5. 推送内容控制
+# ===============================================================
+display:
+  region_order:
+    - ai_analysis                       # 1️⃣ AI 分析「值得关注的方向」放最顶部
+    - hotlist                           # 2️⃣ 热榜（关键词分组）
+    - rss                               # 3️⃣ RSS 订阅
+    - standalone                        # 4️⃣ 独立展示区
+    - new_items                         # 5️⃣ 新增热点
+
+  regions:
+    ai_analysis: false                  # AI 分析区（默认关闭；配好 AI_API_KEY 后改 true 或用 secret AI_ANALYSIS_ENABLED=true）
+    hotlist: true
+    rss: true
+    standalone: true                    # 独立展示区：完整展示 GitHub Trending + Show HN，不经关键词过滤
+    new_items: false
+
+  standalone:
+    platforms: ["github-trending-today"]   # GitHub 今日热榜完整展示（发现新工具/新方向）
+    rss_feeds: ["hackernews-show"]         # Show HN 完整展示（新产品/独立开发动向）
+    max_items: 10
+
+
+# ===============================================================
+# 6. 推送通知
+#
+# ⚠️ webhook / token 不要写在这里！
+#    请在 GitHub 仓库 Settings → Secrets and variables → Actions 里配置。
+#    渠道对照表见 README.md
+# ===============================================================
+notification:
+  enabled: true
+
+  channels:
+    feishu:
+      webhook_url: ""
+
+    dingtalk:
+      webhook_url: ""
+
+    wework:
+      webhook_url: ""
+      msg_type: "markdown"
+
+    telegram:
+      bot_token: ""
+      chat_id: ""
+
+    email:
+      from: ""
+      password: ""
+      to: ""
+      smtp_server: ""
+      smtp_port: ""
+
+    ntfy:
+      server_url: "https://ntfy.sh"
+      topic: ""
+      token: ""
+
+    bark:
+      url: ""
+
+    slack:
+      webhook_url: ""
+
+    generic_webhook:
+      webhook_url: ""
+      payload_template: ""
+
+
+# ===============================================================
+# 7. 存储配置
+# ===============================================================
+storage:
+  backend: "auto"
+
+  formats:
+    sqlite: true
+    txt: false
+    html: true
+
+  local:
+    data_dir: "output"
+    retention_days: 30                # GitHub Actions 本地只保留 30 天（仓库不增长）
+
+  remote:
+    retention_days: 0
+    endpoint_url: ""
+    bucket_name: ""
+    access_key_id: ""
+    secret_access_key: ""
+    region: ""
+
+  pull:
+    enabled: false
+    days: 7
+
+
+# ===============================================================
+# 8. AI 模型配置（可选：用于 AI 分析 / AI 翻译 / AI 筛选）
+#
+# 不配则完全跳过 AI 功能，推送照常工作。
+# 配好后把 display.regions.ai_analysis 改 true 即可开启每日 AI 总结。
+# 推荐 deepseek/deepseek-v4-flash（便宜够用），DeepSeek API 充值几块钱能用很久。
+# ===============================================================
+ai:
+  model: "deepseek/deepseek-v4-flash"   # LiteLLM 格式: 提供商/模型名
+                                      # 可用 secret AI_MODEL 覆盖
+  api_key: ""                         # 勿写在这里，用 secret AI_API_KEY
+  api_base: ""                        # 自定义 API 地址（主流厂商留空），可用 secret AI_API_BASE
+  timeout: 120
+  temperature: 1.0
+  max_tokens: 5000
+  num_retries: 1
+  fallback_models: []
+
+
+# ===============================================================
+# 9. AI 分析功能（可选 —— 生成「今日值得关注的方向」）
+# ===============================================================
+ai_analysis:
+  enabled: false                      # 配好 AI_API_KEY 后改 true，或加 secret AI_ANALYSIS_ENABLED=true
+
+  language: "Chinese"
+  prompt_file: "ai_analysis_prompt.txt"
+
+  mode: "follow_report"
+
+  max_news_for_analysis: 150          # 参与分析的新闻数上限（控成本）
+
+  include_rss: true                   # RSS 内容也纳入分析（科技日报建议开）
+  include_standalone: true            # GitHub Trending / Show HN 也纳入分析
+
+  include_rank_timeline: true
+
+
+# ===============================================================
+# 10. AI 翻译功能（可选 —— 英文标题翻译成中文，需 AI key）
+# ===============================================================
+ai_translation:
+  enabled: false                      # 有 AI key 可开：RSS/独立区英文标题→中文
+  language: "中文"
+  prompt_file: "ai_translation_prompt.txt"
+
+  batch_size: 100
+  batch_interval: 2
+
+  scope:
+    hotlist: false
+    rss: true
+    standalone: true
+
+
+# ===============================================================
+# 11. 高级设置（一般无需修改）
+# ===============================================================
+advanced:
+  debug: false
+
+  version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version"
+  mcp_version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version_mcp"
+  configs_version_check_url: "https://raw.githubusercontent.com/sansan0/TrendRadar/refs/heads/master/version_configs"
+
+  crawler:
+    request_interval: 2000
+    use_proxy: false
+    default_proxy: "http://127.0.0.1:10801"
+
+  rss:
+    request_interval: 1000
+    timeout: 15
+    use_proxy: false
+    proxy_url: ""
+
+  weight:
+    rank: 0.6
+    frequency: 0.3
+    hotness: 0.1
+
+  max_accounts_per_channel: 3
+
+  batch_size:
+    default: 4000
+    dingtalk: 20000
+    feishu: 30000
+    bark: 4000
+    slack: 4000
+  batch_send_interval: 3
+  feishu_message_separator: "━━━━━━━━━━━━━━━━"
