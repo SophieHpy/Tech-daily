@@ -176,7 +176,7 @@ report:
 
   rank_threshold: 5                   # 排名高亮阈值
 
-  max_news_per_keyword: 8             # 每个关键词组最多显示 8 条（控制推送长度）
+  max_news_per_keyword: 5             # 每个关键词组最多显示 5 条（控制推送长度）
 
 
 # ===============================================================
@@ -210,7 +210,7 @@ display:
     - new_items                         # 5️⃣ 新增热点
 
   regions:
-    ai_analysis: false                  # AI 分析区（默认关闭；配好 AI_API_KEY 后改 true 或用 secret AI_ANALYSIS_ENABLED=true）
+    ai_analysis: true                   # AI 分析区：AI 未启用/失败时自动跳过不显示
     hotlist: true
     rss: true
     standalone: true                    # 独立展示区：完整展示 GitHub Trending + Show HN，不经关键词过滤
