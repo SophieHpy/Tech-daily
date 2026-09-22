@@ -53,9 +53,22 @@
 | 推送时间 | `.github/workflows/crawler.yml` → `cron` |
 | 每组最多显示几条 | `config.yaml` → `report.max_news_per_keyword` |
 
-## 可选：AI 每日总结 + 英文标题翻译
+## 可选：AI 每日总结（精读/速览分层）+ 英文标题翻译
 
-加一个 `AI_API_KEY` secret（推荐 [DeepSeek](https://platform.deepseek.com/)，几块钱用一个月；也支持 OpenAI/Gemini 等），再加一个 secret `AI_ANALYSIS_ENABLED = true`，推送开头就会多出一段「今日值得关注的方向」AI 分析。`AI_TRANSLATION_ENABLED = true` 可把英文标题翻译成中文。不配 AI 也完全能用。
+配好后推送开头会多出 AI 分析板块，包含：**今日总览**（3-5 句主线定性）、**值得细看**（精读清单 ≤8 条，每条附理由）、**简讯即可**（速览清单 ≤12 条）、**RSS 增量**、**方向信号**（新机会/新赛道标注，指向你的主线）、**岗位源摘要**。
+
+需要三个 secret：
+
+| Secret | 值 |
+|---|---|
+| `AI_API_KEY` | 你的模型 API key |
+| `AI_ANALYSIS_ENABLED` | `true` |
+| `AI_MODEL` | 模型名（可选，默认 `deepseek/deepseek-v4-flash`） |
+
+**免费方案（推荐先试这个）**：注册 [智谱开放平台](https://open.bigmodel.cn/) 拿 GLM-4-Flash 免费 key，然后 `AI_MODEL = openai/glm-4-flash`，`AI_API_BASE = https://open.bigmodel.cn/api/paas/v4`。每天一次的用量免费额度完全够。
+**付费方案**：DeepSeek（约几分钱一天）`AI_MODEL = deepseek/deepseek-v4-flash`，或任何 OpenAI 兼容服务。
+
+另设 `AI_TRANSLATION_ENABLED = true` 可把英文标题翻译成中文。不配 AI 也完全能用。
 
 ## 本地调试（可选）
 
