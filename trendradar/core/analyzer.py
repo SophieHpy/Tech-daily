@@ -90,6 +90,35 @@ def format_time_display(
         return f"[{first_display} ~ {last_display}]"
 
 
+def _is_major_news(title_data: Dict, rank_threshold: int) -> bool:
+    """判断是否为「重大新闻」：多平台同现，或在任一平台进入高排名。"""
+    if title_data.get("count", 0) >= 2:
+        return True
+    ranks = title_data.get("ranks") or []
+    return bool(ranks) and min(ranks) <= rank_threshold
+
+
+def _apply_group_limit(
+    sorted_titles: List[Dict],
+    group_max_count,
+    rank_threshold: int,
+) -> List[Dict]:
+    """应用词组条数上限。group_max_count 为 int 时是固定上限；
+    为 (base, extra) 元组时是弹性上限——日常展示 base 条，
+    其后最多 extra 条仅保留重大新闻。"""
+    if not group_max_count:
+        return sorted_titles
+    if isinstance(group_max_count, tuple):
+        base, extra = group_max_count
+        head = sorted_titles[:base]
+        majors = [
+            t for t in sorted_titles[base:]
+            if _is_major_news(t, rank_threshold)
+        ][:extra]
+        return head + majors
+    return sorted_titles[:group_max_count]
+
+
 def count_word_frequency(
     results: Dict,
     word_groups: List[Dict],
@@ -454,8 +483,7 @@ def count_word_frequency(
             # 使用全局配置
             group_max_count = max_news_per_keyword
 
-        if group_max_count > 0:
-            sorted_titles = sorted_titles[:group_max_count]
+        sorted_titles = _apply_group_limit(sorted_titles, group_max_count, rank_threshold)
 
         # 优先使用 display_name，否则使用 group_key
         display_word = group_key_to_display_name.get(group_key) or group_key
@@ -682,8 +710,7 @@ def count_rss_frequency(
         group_max_count = group_key_to_max_count.get(group_key, 0)
         if group_max_count == 0:
             group_max_count = max_news_per_keyword
-        if group_max_count > 0:
-            sorted_titles = sorted_titles[:group_max_count]
+        sorted_titles = _apply_group_limit(sorted_titles, group_max_count, rank_threshold)
 
         # 优先使用 display_name，否则使用 group_key
         display_word = group_key_to_display_name.get(group_key) or group_key

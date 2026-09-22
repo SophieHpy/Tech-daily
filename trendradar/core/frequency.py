@@ -188,11 +188,19 @@ def load_frequency_words(
 
         for word in words:
             if word.startswith("@"):
-                # 解析最大显示数量（只接受正整数）
+                # 解析最大显示数量：@N 固定上限；@N+M 弹性上限
+                # （日常 N 条，余下 M 条仅展示"重大"新闻——多平台同现或高排名）
+                cap_spec = word[1:]
                 try:
-                    count = int(word[1:])
-                    if count > 0:
-                        group_max_count = count
+                    if "+" in cap_spec:
+                        base_s, extra_s = cap_spec.split("+", 1)
+                        base, extra = int(base_s), int(extra_s)
+                        if base > 0 and extra > 0:
+                            group_max_count = (base, extra)
+                    else:
+                        count = int(cap_spec)
+                        if count > 0:
+                            group_max_count = count
                 except (ValueError, IndexError):
                     pass  # 忽略无效的@数字格式
             elif word.startswith("!"):
