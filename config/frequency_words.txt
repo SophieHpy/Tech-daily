@@ -32,8 +32,9 @@
 /智谱|\bGLM\b|\bChatGLM\b|\bMiniMax\b|月之暗面|\bKimi\b/i => 国产大模型
 /\bLlama\b|\bMistral\b|\bGrok\b|\bMeta AI\b/i => 海外开源模型
 /大模型|大语言模型|\bLLM\b|多模态|\bAIGC\b/ => 大模型
-/\bAI ?Agent\b|智能体|\bCopilot\b|\bCursor\b|\bDevin\b|\bManus\b/i => AI Agent
-/\bMCP\b|\bRAG\b|推理模型|文生视频|文生图/ => AI 技术
+/\bAI ?Agent\b|智能体|\bCopilot\b|\bCursor\b|\bDevin\b|\bManus\b|agentic|多智能体/i => AI Agent
+/\bLangChain\b|\bLangGraph\b|\bAutoGen\b|\bCAMEL\b|\bDify\b|\bCoze\b|\bn8n\b/i => Agent 框架
+/\bMCP\b|\bRAG\b|推理模型|文生视频|文生图|向量|知识图谱|检索增强|embedding/i => AI 技术
 
 
 # 2️⃣ 低空经济与无人机 —— 差异化主线（大湾区产业风口）
@@ -71,6 +72,7 @@
 [机器人与硬件]
 /机器人|具身智能|人形机器人|机械臂/ => 机器人
 /宇树|\bUnitree\b|智元|稚晖君|\bFigure\b|\bOptimus\b|波士顿动力/i => 机器人公司
+/\bVLA\b|视觉语言动作|世界模型|遥操作|灵巧手|Sim2Real|\bROS\b/i => 具身智能技术
 
 
 # 7️⃣ 自动驾驶与汽车科技
