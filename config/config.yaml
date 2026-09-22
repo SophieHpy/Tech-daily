@@ -134,6 +134,27 @@ rss:
       name: "Lobsters"
       url: "https://lobste.rs/rss"
 
+    # ── 招聘源（配合 frequency_words.txt 的「目标岗位」组做相关度过滤）──
+    - id: "v2ex-jobs"
+      name: "V2EX 酷工作"
+      url: "https://www.v2ex.com/feed/jobs.xml"
+      max_age_days: 2                # 岗位可放宽新鲜度
+
+    - id: "hn-hiring"
+      name: "HN Who's Hiring"
+      url: "https://hnrss.org/whoishiring/jobs"
+      max_age_days: 7                # 月度帖，放宽到 7 天
+
+    - id: "wwr-backend"
+      name: "WWR 后端岗"
+      url: "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss"
+      max_age_days: 3
+
+    - id: "wwr-devops"
+      name: "WWR DevOps 岗"
+      url: "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss"
+      max_age_days: 3
+
     - id: "oschina"
       name: "开源中国"
       url: "https://www.oschina.net/news/rss"
@@ -197,8 +218,13 @@ display:
 
   standalone:
     platforms: ["github-trending-today"]   # GitHub 今日热榜完整展示（发现新工具/新方向）
-    rss_feeds: ["hackernews-show"]         # Show HN 完整展示（新产品/独立开发动向）
-    max_items: 10
+    rss_feeds:                             # 完整展示：新产品 + 招聘岗位（均为岗位/产品类源，不需关键词过滤）
+      - "hackernews-show"                  # Show HN（新产品/独立开发动向）
+      - "v2ex-jobs"                        # V2EX 酷工作（国内技术岗，含远程）
+      - "hn-hiring"                        # HN Who's Hiring（海外初创岗）
+      - "wwr-backend"                      # WWR 后端岗（海外远程）
+      - "wwr-devops"                       # WWR DevOps 岗（海外远程，贴合 infra 画像）
+    max_items: 8                           # 每个源最多展示 8 条
 
 
 # ===============================================================

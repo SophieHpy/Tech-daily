@@ -22,7 +22,14 @@
 # ───────────────────────────────────────────────────────────────
 [WORD_GROUPS]
 
-# 1️⃣ AI 大模型与 Agent —— 最核心的方向
+# 1️⃣ 岗位相关 —— 新闻源里的招聘信号（必须同时含招聘词+岗位词才推送）
+# 专门的招聘 RSS（V2EX酷工作/HN Hiring/WWR）在独立展示区全量展示，不经此过滤
+[岗位相关]
++/招聘|招募|内推|校招|应届|实习|hiring|求职|岗位|猎头|HR|JD/i
+/大模型|\bLLM\b|人工智能|算法|\bAgent\b|智能体|后端|infra|MLOps|低空|无人机|机器人|具身|自动驾驶|远程|remote/i => 相关岗位
+
+
+# 2️⃣ AI 大模型与 Agent —— 最核心的方向
 [AI 大模型与 Agent]
 /\bOpenAI\b|\bChatGPT\b|\bGPT-?[45]\b|\bSora\b|\bSam Altman\b/i => OpenAI
 /\bAnthropic\b|\bClaude\b|\bClaude Code\b|\bDario\b/i => Anthropic
